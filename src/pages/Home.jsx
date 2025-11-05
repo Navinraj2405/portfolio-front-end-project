@@ -11,7 +11,7 @@ function Home() {
   // ✅ Fetch latest resume
   const fetchResume = async () => {
     try {
-      const res = await axios.get("https://portfolio-back-end-project-1.onrender.com/api/resume");
+      const res = await axios.get("http://localhost:5000/api/resume");
       setResume(res.data);
     } catch (err) {
       console.error("Error fetching resume:", err);
@@ -39,7 +39,7 @@ function Home() {
       const token = await user.getIdToken();
       const formData = new FormData();
       formData.append("resume", selectedFile);
-      await axios.post("https://portfolio-back-end-project-1.onrender.com/api/resume", formData, {
+      await axios.post("http://localhost:5000/api/resume", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ function Home() {
           <div className="flex gap-4 mt-6 items-center">
             {resume ? (
               <a
-                href={`https://portfolio-back-end-project-1.onrender.com${resume.filePath}`}
+                href={`http://localhost:5000${resume.filePath}`}
                 download={resume.fileName}
                 className="bg-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
               >

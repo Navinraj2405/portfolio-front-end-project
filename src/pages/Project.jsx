@@ -26,7 +26,7 @@ function Project() {
   // Fetch projects
   const fetchProjects = async () => {
     try {
-      const res = await axios.get("https://portfolio-back-end-project-1.onrender.com/api/projects");
+      const res = await axios.get("http://localhost:5000/api/projects");
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -59,7 +59,7 @@ function Project() {
 
     try {
       setLoading(true);
-      await axios.post("https://portfolio-back-end-project-1.onrender.com/api/projects", formDataWithImage);
+      await axios.post("http://localhost:5000/api/projects", formDataWithImage);
       alert("✅ Project added successfully!");
       setFormData({ title: "", description: "", githubLink: "", liveLink: "" });
       setImage(null);
@@ -159,7 +159,7 @@ function Project() {
             className="bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-indigo-700/30 hover:scale-105 transform transition duration-300"
           >
             <img
-              src={`https://portfolio-back-end-project-1.onrender.com${project.image}`}
+              src={`http://localhost:5000${project.image}`}
               alt={project.title}
               className="w-full h-52 object-cover rounded-lg mb-5 border border-gray-700"
             />
