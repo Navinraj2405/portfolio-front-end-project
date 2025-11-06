@@ -17,6 +17,7 @@ function Project() {
   const [loading, setLoading] = useState(false);
 
   const ADMIN_UID = "JVo2DR6keLQlWwLWGPCidwcIFaC3";
+  const API_BASE = "https://portfolio-back-end-project-1.onrender.com"; // ✅ use this
 
   // Dropzone setup
   const { getRootProps, getInputProps } = useDropzone({
@@ -26,7 +27,7 @@ function Project() {
   // Fetch projects
   const fetchProjects = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/projects");
+      const res = await axios.get(`${API_BASE}/api/projects`);
       setProjects(res.data);
     } catch (err) {
       console.error("Error fetching projects:", err);
@@ -45,7 +46,6 @@ function Project() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     if (!user) return alert("You must be logged in to upload a project.");
     if (user.uid !== ADMIN_UID)
       return alert("❌ Only admin can upload projects.");
@@ -59,7 +59,7 @@ function Project() {
 
     try {
       setLoading(true);
-      await axios.post("http://localhost:5000/api/projects", formDataWithImage);
+      await axios.post(`${API_BASE}/api/projects`, formDataWithImage);
       alert("✅ Project added successfully!");
       setFormData({ title: "", description: "", githubLink: "", liveLink: "" });
       setImage(null);
@@ -87,7 +87,6 @@ function Project() {
           <h2 className="text-2xl font-semibold text-indigo-300 mb-4">
             Add New Project 🚀
           </h2>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <input
               type="text"
@@ -122,7 +121,6 @@ function Project() {
               className="p-3 rounded-lg bg-gray-900 border border-gray-700 text-white focus:ring-2 focus:ring-indigo-500 outline-none"
             />
           </div>
-
           <div
             {...getRootProps()}
             className="p-6 border-2 border-dashed border-gray-600 rounded-lg text-center cursor-pointer hover:bg-gray-700/40 transition"
@@ -136,7 +134,6 @@ function Project() {
               </p>
             )}
           </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -159,7 +156,7 @@ function Project() {
             className="bg-gray-800/60 backdrop-blur-md border border-gray-700 rounded-2xl p-6 shadow-lg hover:shadow-indigo-700/30 hover:scale-105 transform transition duration-300"
           >
             <img
-              src={`http://localhost:5000${project.image}`}
+              src={`${API_BASE}${project.image}`}
               alt={project.title}
               className="w-full h-52 object-cover rounded-lg mb-5 border border-gray-700"
             />
