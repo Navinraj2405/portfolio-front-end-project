@@ -73,7 +73,7 @@ function Project() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-black min-h-screen text-white py-24 px-6">
+    <div className="bg-gradient-to-r from-gray-800 via-gray-900 to-black min-h-screen text-white py-20 px-6">
       <h1 className="text-4xl md:text-5xl font-bold text-center mb-12 text-indigo-400 drop-shadow-lg">
         💻 My Projects
       </h1>
