@@ -1,108 +1,68 @@
  import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { onAuthStateChanged } from "firebase/auth";
 import auth from "../config/Firebase";
 
 function Home() {
-  const [resume, setResume] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState(null);
 
-  const BACKEND_URL = "https://portfolio-back-end-project-1.onrender.com";
-  const ADMIN_UID = "JVo2DR6keLQlWwLWGPCidwcIFaC3"; // 🔐 Replace with your Firebase UID
+  const ADMIN_UID = "JVo2DR6keLQlWwLWGPCidwcIFaC3"; // your UID
 
-  // ✅ Fetch latest resume from backend
-  const fetchResume = async () => {
-    try {
-      const res = await axios.get(`${BACKEND_URL}/api/resume`);
-      setResume(res.data);
-    } catch (err) {
-      console.error("❌ Error fetching resume:", err);
-    }
-  };
-
-  // ✅ Listen for Firebase Auth changes
+  // Listen for Firebase Auth changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
     });
-    fetchResume();
     return () => unsubscribe();
   }, []);
 
-  // ✅ Handle resume upload (admin only)
+  // Handle resume upload (admin only → saves locally for manual replace)
   const handleResumeUpload = async (e) => {
     e.preventDefault();
-    if (!selectedFile) return alert("Please select a PDF file to upload.");
-    if (user?.uid !== ADMIN_UID) return alert("❌ Only admin can upload resumes.");
 
-    try {
-      setUploading(true);
-      const formData = new FormData();
-      formData.append("resume", selectedFile);
+    if (!selectedFile) return alert("Please select a PDF file.");
+    if (user?.uid !== ADMIN_UID)
+      return alert("❌ Only admin can upload resumes.");
 
-      await axios.post(`${BACKEND_URL}/api/resume`, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      alert("✅ Resume uploaded successfully!");
-      setSelectedFile(null);
-      fetchResume();
-    } catch (err) {
-      console.error("Error uploading resume:", err);
-      alert("❌ Failed to upload resume.");
-    } finally {
-      setUploading(false);
-    }
+    alert(
+      "⚠️ Frontend-only mode enabled.\n\nTo update your resume:\n1. Replace the file manually in /public/Navinraj_CV.pdf\n2. Vercel/Netlify will auto-update your site."
+    );
   };
 
   return (
     <div className="bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 text-white min-h-screen mt-16 py-10">
+      
       {/* Hero Section */}
       <section className="flex flex-col md:flex-row justify-between items-center p-10">
+        
         {/* Left Content */}
         <div className="max-w-xl space-y-6">
           <h1 className="text-5xl font-bold leading-snug">
             Hello, I'm <span className="text-indigo-400">Navinraj</span> 👋
           </h1>
+
           <p className="text-gray-300 text-lg">
             I'm a passionate{" "}
             <span className="font-semibold text-indigo-300">
               MERN Stack Developer
             </span>{" "}
-            who loves building modern, scalable, and interactive web
-            applications.
-          </p>
-          <p className="text-gray-400">
-            With strong skills in{" "}
-            <span className="font-medium text-indigo-300">
-              React.js, Node.js, Express.js, MongoDB
-            </span>
-            , and a foundation in teamwork & creativity, I deliver both
-            performance and beauty in code.
+            who loves building modern and interactive web applications.
           </p>
 
           {/* Resume Buttons */}
           <div className="flex flex-wrap gap-4 mt-6 items-center">
-            {resume ? (
-              <a
-                href={`${BACKEND_URL}${resume.filePath}`}
-                download={resume.fileName}
-                className="bg-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
-              >
-                📄 Download Resume
-              </a>
-            ) : (
-              <button
-                disabled
-                className="bg-gray-500 px-6 py-3 rounded-lg font-semibold cursor-not-allowed"
-              >
-                No Resume Found
-              </button>
-            )}
+            
+            {/* Public Resume Download */}
+            <a
+              href="/Navinraj_CV.pdf"
+              download="Navinraj_Resume.pdf"
+              className="bg-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+            >
+              📄 Download Resume
+            </a>
 
-            {/* Admin Upload */}
+            {/* Admin Upload – replaces file manually */}
             {user?.uid === ADMIN_UID && (
               <form
                 onSubmit={handleResumeUpload}
@@ -117,6 +77,7 @@ function Home() {
                   />
                   📤 Choose File
                 </label>
+
                 <button
                   type="submit"
                   disabled={uploading}
@@ -143,25 +104,16 @@ function Home() {
         </div>
       </section>
 
-      {/* Auto-moving Technology Logos */}
+      {/* Auto-moving Logos */}
       <section className="overflow-hidden py-10 relative">
         <div className="flex gap-16 animate-scroll">
-          <img src="db.png" alt="MongoDB" className="h-20 w-auto rounded-full" />
-          <img src="express.jpg" alt="Express" className="h-20 w-auto rounded-full" />
-          <img src="html.png" alt="HTML" className="h-20 w-auto rounded-full" />
-          <img src="mern.jpg" alt="MERN" className="h-20 w-auto rounded-full" />
-          <img src="node.png" alt="Node.js" className="h-20 w-auto rounded-full" />
-          <img src="react.png" alt="React" className="h-20 w-auto rounded-full" />
-          <img src="tailwind.png" alt="Tailwind CSS" className="h-20 w-auto rounded-full" />
-
-          {/* Duplicate for smooth infinite scroll */}
-          <img src="db.png" alt="MongoDB" className="h-20 w-auto rounded-full" />
-          <img src="express.jpg" alt="Express" className="h-20 w-auto rounded-full" />
-          <img src="html.png" alt="HTML" className="h-20 w-auto rounded-full" />
-          <img src="mern.jpg" alt="MERN" className="h-20 w-auto rounded-full" />
-          <img src="node.png" alt="Node.js" className="h-20 w-auto rounded-full" />
-          <img src="react.png" alt="React" className="h-20 w-auto rounded-full" />
-          <img src="tailwind.png" alt="Tailwind CSS" className="h-20 w-auto rounded-full" />
+          <img src="db.png" className="h-20 w-auto rounded-full" />
+          <img src="express.jpg" className="h-20 w-auto rounded-full" />
+          <img src="html.png" className="h-20 w-auto rounded-full" />
+          <img src="mern.jpg" className="h-20 w-auto rounded-full" />
+          <img src="node.png" className="h-20 w-auto rounded-full" />
+          <img src="react.png" className="h-20 w-auto rounded-full" />
+          <img src="tailwind.png" className="h-20 w-auto rounded-full" />
         </div>
       </section>
 
@@ -182,6 +134,42 @@ function Home() {
           }
         `}
       </style>
+
+      {/* ⭐ Skills Section ⭐ */}
+      <section className="py-16 px-8 md:px-16">
+        <h2 className="text-4xl font-bold text-center text-indigo-400 mb-10">
+          My Skills
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+
+          {/* Frontend */}
+          <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20 hover:scale-[1.02] transition-transform duration-300">
+            <h3 className="text-2xl font-semibold text-indigo-300 mb-4">
+              Frontend
+            </h3>
+            <ul className="text-gray-300 space-y-2 list-disc list-inside">
+              <li>HTML</li>
+              <li>CSS</li>
+              <li>TailwindCSS</li>
+              <li>JavaScript</li>
+              <li>React.js</li>
+            </ul>
+          </div>
+
+          {/* Backend */}
+          <div className="bg-white/10 backdrop-blur-lg p-8 rounded-2xl shadow-xl border border-white/20 hover:scale-[1.02] transition-transform duration-300">
+            <h3 className="text-2xl font-semibold text-indigo-300 mb-4">
+              Backend & Database
+            </h3>
+            <ul className="text-gray-300 space-y-2 list-disc list-inside">
+              <li>Node.js</li>
+              <li>Express.js</li>
+              <li>MongoDB</li>
+            </ul>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
